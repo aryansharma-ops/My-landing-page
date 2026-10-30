@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ivory: #f7f5f0;
+  --color-charcoal: #202124;
+  --color-navy: #17243a;
+  --color-gold: #b89a5a;
+  --color-grey-mute: #686868;
+
+  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+body {
+  @apply bg-ivory font-sans text-charcoal antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(184, 154, 90, 0.35);
+  color: #17243a;
+}
+
+:focus-visible {
+  outline: 2px solid #17243a;
+  outline-offset: 3px;
+}
+
+/* ---------------- reveal on scroll ---------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------------- premium book mockup ---------------- */
+.book {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  isolation: isolate;
+  display: block;
+}
+.book__face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 2px 4px 4px 2px;
+  box-shadow:
+    inset 0 0 0 1px rgba(23, 36, 58, 0.08),
+    -8px 10px 22px -12px rgba(23, 36, 58, 0.55);
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 0.5s;
+  z-index: 1;
+  background: #efece3;
+}
+.book--tilt .book__face {
+  transform: perspective(1100px) rotateY(-8deg);
+}
+.group:hover .book--tilt .book__face,
+.book--tilt:hover .book__face {
+  transform: perspective(1100px) rotateY(-2deg);
+}
+/* spine shading along the left edge */
+.book__spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 10px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.28) 0%,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(0, 0, 0, 0.05) 78%,
+    transparent 100%
+  );
+  border-radius: 2px 0 0 2px;
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+/* page block peeking out on the right */
+.book__pages {
+  position: absolute;
+  top: 1.2%;
+  bottom: 1.2%;
+  right: -5px;
+  width: 6px;
+  z-index: 0;
+  background: repeating-linear-gradient(90deg, #f6f3ea 0 1.5px, #d8d2bf 1.5px 3px);
+  border-radius: 0 2px 2px 0;
+  box-shadow: 2px 2px 6px -2px rgba(23, 36, 58, 0.35);
+}
+.book__shadow {
+  position: absolute;
+  left: 8%;
+  right: -2%;
+  bottom: -7%;
+  height: 26px;
+  z-index: -1;
+  background: radial-gradient(ellipse at center, rgba(23, 36, 58, 0.32), transparent 68%);
+  filter: blur(7px);
+}
+
+/* gentle idle float for the hero cluster */
+.book-float {
+  animation: book-float 7s ease-in-out infinite alternate;
+}
+@keyframes book-float {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-10px);
+  }
+}
+
+/* ---------------- topic marquee ---------------- */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 46s linear infinite;
+}
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------------- forms ---------------- */
+input,
+select,
+textarea {
+  border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .book-float,
+  .marquee__track {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
